@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HOC - IA Guild Mission Tree & Timer</title>
+    <title>HOC - IA Guild Presentation & Mission Tree</title>
     <style>
         /* ==========================================================================
-           1. DESIGN SYSTEM & COULEURS (Calqué sur House of Co-Design / "Test Eloi Th")
+           1. DESIGN SYSTEM & COULEURS
            ========================================================================== */
         :root {
             --primary-orange: #FF6B35;
@@ -90,7 +90,7 @@
             text-transform: uppercase;
         }
 
-        /* TIMER MODULE STYLE */
+        /* TIMER MODULE */
         .timer-container {
             display: flex;
             align-items: center;
@@ -163,6 +163,26 @@
             color: var(--white);
         }
 
+        .tab-btn.tab-locked {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .tab-btn.tab-unlocked {
+            background-color: #E2F0D9;
+            color: #385723;
+            border: 1px solid #385723;
+            opacity: 1;
+            cursor: pointer;
+            animation: pulseGreen 2s infinite;
+        }
+
+        @keyframes pulseGreen {
+            0% { box-shadow: 0 0 0 0 rgba(56, 87, 35, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(56, 87, 35, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(56, 87, 35, 0); }
+        }
+
         .tab-content {
             display: none;
             animation: fadeIn 0.4s ease-in-out;
@@ -177,9 +197,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* ==========================================================================
-           2. REPRISE DES COMPOSANTS GRAPHIQUES "Test Eloi Th"
-           ========================================================================== */
+        /* COMPONENTS */
         .info-card {
             background-color: var(--white);
             border-left: 5px solid var(--primary-orange);
@@ -207,9 +225,12 @@
             border: 1px solid var(--border-color);
         }
 
-        .tag-hoc.filiere-Prompting { background-color: #E2F0D9; color: #385723; }
-        .tag-hoc.filiere-Analyse { background-color: #FFF2CC; color: #7F6000; }
-        .tag-hoc.filiere-Collaboration { background-color: #FCE4D6; color: #C65911; }
+        .tag-hoc.filiere-Intro { background-color: #DDEBF7; color: #1F4E78; }
+        .tag-hoc.filiere-Kit { background-color: #E2F0D9; color: #385723; }
+        .tag-hoc.filiere-Cerveau { background-color: #FFF2CC; color: #7F6000; }
+        .tag-hoc.filiere-API { background-color: #FCE4D6; color: #C65911; }
+        .tag-hoc.filiere-Workspace { background-color: #E1D5E7; color: #53315B; }
+        .tag-hoc.filiere-Conclusion { background-color: #D1E7DD; color: #0F5132; }
 
         .key-metrics {
             display: grid;
@@ -239,14 +260,12 @@
             font-weight: bold;
         }
 
-        /* ==========================================================================
-           3. STRUCTURE DE L'ARBRE DE COMPÉTENCES & DES ARBORESCENCES
-           ========================================================================== */
+        /* GRIDS & CARDS */
         .tree-branch-title {
             font-size: 18px;
             font-weight: bold;
             text-transform: uppercase;
-            margin: 30px 0 15px;
+            margin: 35px 0 15px;
             color: var(--dark-charcoal);
             border-bottom: 2px solid var(--border-color);
             padding-bottom: 5px;
@@ -296,11 +315,6 @@
             text-align: center;
             background: rgba(236, 236, 236, 0.7);
             border-radius: 6px;
-        }
-
-        .lock-icon {
-            font-size: 28px;
-            margin-bottom: 8px;
         }
 
         .mission-header {
@@ -357,11 +371,6 @@
             background-color: var(--white);
         }
 
-        .proof-input:focus {
-            outline: none;
-            border-color: var(--primary-orange);
-        }
-
         .action-btn {
             width: 100%;
             background-color: var(--dark-charcoal);
@@ -374,7 +383,6 @@
             transition: background-color 0.2s;
             text-transform: uppercase;
             font-size: 12px;
-            letter-spacing: 1px;
         }
 
         .action-btn:disabled {
@@ -388,24 +396,25 @@
             cursor: not-allowed;
         }
 
-        /* ROSTER DESIGN */
+        /* RESULTS WORKSPACE */
         .team-roster {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
             gap: 20px;
+            margin-top: 20px;
         }
 
         .member-card {
             background-color: var(--white);
             border: 1px solid var(--border-color);
             padding: 25px 20px;
-            border-radius: 4px;
+            border-radius: 6px;
             text-align: center;
         }
 
-        .member-icon {
-            width: 55px;
-            height: 55px;
+        .member-avatar {
+            width: 60px;
+            height: 60px;
             background-color: var(--light-grey);
             border-radius: 50%;
             margin: 0 auto 15px;
@@ -413,56 +422,82 @@
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            color: var(--primary-orange);
-            font-size: 18px;
-            border: 1px solid var(--border-color);
+            color: var(--dark-charcoal);
+            border: 2px solid var(--border-color);
         }
 
-        .member-role {
+        .member-name { font-weight: bold; color: var(--dark-charcoal); }
+        .member-role { font-size: 11px; text-transform: uppercase; font-weight: bold; color: var(--primary-orange); }
+
+        .results-table-container {
+            margin-top: 25px;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .result-row {
+            display: grid;
+            grid-template-columns: 200px 120px 1fr;
+            border-bottom: 1px solid var(--border-color);
+            align-items: center;
+        }
+
+        .result-row.row-header {
+            background-color: var(--dark-charcoal);
+            color: white;
             font-weight: bold;
-            color: var(--dark-charcoal);
-            margin-bottom: 5px;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        .result-cell { padding: 15px 20px; font-size: 14px; }
+        .result-badge-score {
+            background-color: rgba(255,107,53,0.1); color: var(--primary-orange);
+            padding: 4px 10px; border-radius: 4px; font-weight: bold;
+        }
+        
+        .result-output-text {
+            font-size: 13px; color: #555; background: var(--light-grey);
+            padding: 8px 12px; border-radius: 4px; border-left: 3px solid var(--primary-orange);
         }
     </style>
 </head>
 <body>
 
-    <!-- BRAND CONFIGURATION HEADER WITH INTERACTIVE TIMER -->
     <header>
         <div class="logo-hoc">HOUSE OF <span>CO</span>DESIGN</div>
         
-        <!-- MODULE INTERACTIF : TIMER -->
         <div class="timer-container">
             <div class="timer-display" id="timer-countdown">75:00</div>
             <button class="timer-btn" id="timer-control-btn" onclick="toggleTimer()">Lancer</button>
         </div>
 
         <div class="stats-top">
-            <div class="guild-rank" id="guild-rank">Apprentis IA</div>
+            <div class="guild-rank" id="guild-rank">Novices de l'IA Workspace</div>
             <div class="score-board">SCORE DE GUILDE : <span id="guild-score">0</span> PTS</div>
         </div>
     </header>
 
     <div class="container">
 
-        <!-- INTERACTIVE NAVIGATION TABS -->
         <nav class="navigation-tabs">
-            <button class="tab-btn active" onclick="switchTab('board')">Arbre des Quêtes</button>
-            <button class="tab-btn" onclick="switchTab('planning')">Déroulé (1h15)</button>
-            <button class="tab-btn" onclick="switchTab('guild')">Membres de la Guilde</button>
+            <button class="tab-btn active" id="btn-tab-board" onclick="switchTab('board')">Arbre des Missions</button>
+            <button class="tab-btn" id="btn-tab-guild" onclick="switchTab('guild')">Membres de la Guilde</button>
+            <button class="tab-btn tab-locked" id="btn-tab-planning" onclick="tryOpeningPlanning()">🔒 Résultats Secrets</button>
         </nav>
 
-        <!-- TAB 1: ARBRE DE COMPÉTENCES & QUÊTES -->
         <section id="board" class="tab-content active">
             
             <div class="key-metrics">
                 <div class="metric-block">
-                    <div class="metric-number" id="count-total">0/15</div>
-                    <div class="metric-label">Quêtes Validées</div>
+                    <div class="metric-number" id="count-total">0/14</div>
+                    <div class="metric-label">Objectifs Validés</div>
                 </div>
                 <div class="metric-block">
-                    <div class="metric-number">300 PTS</div>
-                    <div class="metric-label">Seuil Général Secret</div>
+                    <div class="metric-number">400 PTS</div>
+                    <div class="metric-label">Seuil de Clôture</div>
                 </div>
                 <div class="metric-block">
                     <div class="metric-number" id="global-score-metric">0</div>
@@ -470,199 +505,275 @@
                 </div>
             </div>
 
-            <div class="info-card">
-                <h3>🌳 Arbre de progression & Validation par Preuve</h3>
-                <p>Pour progresser, accomplissez les quêtes de la base vers le haut. Chaque quête nécessite de **fournir une preuve** (prompt rédigé ou texte produit) pour être validée. Les quêtes secrètes se débloquent individuellement selon vos choix.</p>
-            </div>
+            <div class="tree-branch-title">🌱 Étape Commune Obligatoire</div>
+            <div class="mission-grid" id="grid-intro"></div>
 
-            <!-- FILIÈRE 1 -->
-            <div class="tree-branch-title">🔥 Filière A : Art du Prompting (Technique)</div>
-            <div class="mission-grid" id="grid-prompting"></div>
+            <div class="tree-branch-title">🔥 Branche 1 : Kit d'Animation Express (Gemini App)</div>
+            <div class="mission-grid" id="grid-kit"></div>
 
-            <!-- FILIÈRE 2 -->
-            <div class="tree-branch-title">📊 Filière B : Analyse & Structuration (Données)</div>
-            <div class="mission-grid" id="grid-analyse"></div>
+            <div class="tree-branch-title">📊 Branche 2 : Cerveau de la Structure (NotebookLM)</div>
+            <div class="mission-grid" id="grid-cerveau"></div>
 
-            <!-- FILIÈRE 3 -->
-            <div class="tree-branch-title">🤝 Filière C : Collaboration Collective (Équipe)</div>
-            <div class="mission-grid" id="grid-collaboration"></div>
+            <div class="tree-branch-title">⚡ Branche 3 : Initiation aux API (Google AI Studio)</div>
+            <div class="mission-grid" id="grid-api"></div>
 
-            <!-- FILIÈRE SECRÈTE -->
-            <div class="tree-branch-title">🔒 Quêtes Secrètes Légendaires</div>
-            <div class="mission-grid" id="grid-secrete"></div>
+            <div class="tree-branch-title">💼 Branche 4 : Productivité Interne (Gemini & Google Workspace)</div>
+            <div class="mission-grid" id="grid-workspace"></div>
 
+            <div class="tree-branch-title">🔒 Branche Finale de Clôture</div>
+            <div class="mission-grid" id="grid-conclusion"></div>
         </section>
 
-        <!-- TAB 2: PLANNING -->
         <section id="planning" class="tab-content">
-            <div class="info-card">
-                <h3>⏳ Gestion du Temps (Règles de l'atelier)</h3>
-                <p>L'atelier d'intelligence collective est configuré horizontalement sur une durée totale fixe.</p>
+            <div class="info-card" style="border-left-color: var(--success-green);">
+                <h3>🎉 Espace de Restitution Débloqué (15 minutes de Synthèse)</h3>
+                <p>Félicitations, les formateurs ont complété leur parcours pratique Workspace et API. Validez et suivez les URLs GitHub Pages.</p>
             </div>
-            <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-                <div class="metric-block" style="flex: 1; min-width: 250px;">
-                    <div class="metric-number" style="color: var(--primary-orange);">1h15</div>
-                    <div class="metric-label" style="margin-top: 10px;">Phase Pratique de Jeu sur l'Arbre</div>
+
+            <div class="results-table-container">
+                <div class="result-row row-header">
+                    <div class="result-cell">Médiateur / Formateur</div>
+                    <div class="result-cell">Score Final</div>
+                    <div class="result-cell">Livrable Clé / URL GitHub Pages</div>
                 </div>
-                <div class="metric-block" style="flex: 1; min-width: 250px;">
-                    <div class="metric-number" style="color: var(--dark-charcoal);">15 min</div>
-                    <div class="metric-label" style="margin-top: 10px;">Débriefing, Restitution & Résultats</div>
+
+                <div class="result-row">
+                    <div class="result-cell" style="font-weight: bold;">Formateur Alpha</div>
+                    <div class="result-cell"><span class="result-badge-score">150 pts</span></div>
+                    <div class="result-cell"><div class="result-output-text">Quiz d'inclusion publié en ligne : https://alpha-hub.github.io/quiz</div></div>
+                </div>
+
+                <div class="result-row">
+                    <div class="result-cell" style="font-weight: bold;">Formateur Beta</div>
+                    <div class="result-cell"><span class="result-badge-score">180 pts</span></div>
+                    <div class="result-cell"><div class="result-output-text">Base NotebookLM connectée aux procédures administratives de la structure.</div></div>
+                </div>
+
+                <div class="result-row">
+                    <div class="result-cell" style="font-weight: bold;">Formateur Gamma</div>
+                    <div class="result-cell"><span class="result-badge-score">120 pts</span></div>
+                    <div class="result-cell"><div class="result-output-text">Génération réussie de clés de test et structuration de prompts systèmes API.</div></div>
+                </div>
+
+                <div class="result-row">
+                    <div class="result-cell" style="font-weight: bold;">Formateur Delta</div>
+                    <div class="result-cell"><span class="result-badge-score">210 pts</span></div>
+                    <div class="result-cell"><div class="result-output-text">Synthèse d'un long compte-rendu Google Meet couplée à un plan d'action Drive.</div></div>
+                </div>
+
+                <div class="result-row">
+                    <div class="result-cell" style="font-weight: bold;">Formateur Epsilon</div>
+                    <div class="result-cell"><span class="result-badge-score">100 pts</span></div>
+                    <div class="result-cell"><div class="result-output-text">Générateur local connecté en JS à l'API Google AI Studio.</div></div>
+                </div>
+
+                <div class="result-row">
+                    <div class="result-cell" style="font-weight: bold;">Stagiaire Un</div>
+                    <div class="result-cell"><span class="result-badge-score">250 pts</span></div>
+                    <div class="result-cell"><div class="result-output-text">Indexation dynamique et modèle d'organisation des fichiers Drive par IA.</div></div>
+                </div>
+
+                <div class="result-row">
+                    <div class="result-cell" style="font-weight: bold;">Stagiaire Deux</div>
+                    <div class="result-cell"><span class="result-badge-score">140 pts</span></div>
+                    <div class="result-cell"><div class="result-output-text">Audio-guide de synthèse de la charte de médiation locale.</div></div>
+                </div>
+
+                <div class="result-row">
+                    <div class="result-cell" style="font-weight: bold;">Stagiaire Trois</div>
+                    <div class="result-cell"><span class="result-badge-score">130 pts</span></div>
+                    <div class="result-cell"><div class="result-output-text">Script pédagogique et quiz d'évaluation de niveau.</div></div>
+                </div>
+
+                <div class="result-row">
+                    <div class="result-cell" style="font-weight: bold;">Responsable Équipe</div>
+                    <div class="result-cell"><span class="result-badge-score">310 pts</span></div>
+                    <div class="result-cell"><div class="result-output-text">Roue de l'Inclusion interactive hébergée en production via GitHub Pages.</div></div>
+                </div>
+
+                <div class="result-row">
+                    <div class="result-cell" style="font-weight: bold;">Directrice Espace</div>
+                    <div class="result-cell"><span class="result-badge-score">190 pts</span></div>
+                    <div class="result-cell"><div class="result-output-text">Charte éthique interne et règles de sécurité éditées collectivement.</div></div>
                 </div>
             </div>
         </section>
 
-        <!-- TAB 3: ROSTER -->
         <section id="guild" class="tab-content">
             <div class="info-card">
-                <h3>👥 Compagnons Réunis (10 Participants)</h3>
-                <p>Niveau d'IA hétérogène mais alignement horizontal complet au sein de l'espace d'intelligence collective.</p>
+                <h3>👥 Liste des 10 participants actifs</h3>
             </div>
             <div class="team-roster">
-                <div class="member-card"><div class="member-icon">5</div><div class="member-role">Formateurs</div></div>
-                <div class="member-card"><div class="member-icon">3</div><div class="member-role">Stagiaires IA/Data</div></div>
-                <div class="member-card"><div class="member-icon">1</div><div class="member-role">Manager</div></div>
-                <div class="member-card"><div class="member-icon">1</div><div class="member-role">Gérante du Lieu</div></div>
+                <div class="member-card"><div class="member-avatar">M1</div><div class="member-name">Formateur Alpha</div><div class="member-role">Médiateur Numérique</div></div>
+                <div class="member-card"><div class="member-avatar">M2</div><div class="member-name">Formateur Beta</div><div class="member-role">Médiateur Numérique</div></div>
+                <div class="member-card"><div class="member-avatar">M3</div><div class="member-name">Formateur Gamma</div><div class="member-role">Formateur Relais</div></div>
+                <div class="member-card"><div class="member-avatar">M4</div><div class="member-name">Formateur Delta</div><div class="member-role">Formateur Relais</div></div>
+                <div class="member-card"><div class="member-avatar">M5</div><div class="member-name">Formateur Epsilon</div><div class="member-role">Conseiller Numérique</div></div>
+                <div class="member-card"><div class="member-avatar">M6</div><div class="member-name">Stagiaire Un</div><div class="member-role">Animateur Junior</div></div>
+                <div class="member-card"><div class="member-avatar">M7</div><div class="member-name">Stagiaire Deux</div><div class="member-role">Animateur Junior</div></div>
+                <div class="member-card"><div class="member-avatar">M8</div><div class="member-name">Stagiaire Trois</div><div class="member-role">Bénévole Inclusion</div></div>
+                <div class="member-card"><div class="member-avatar">M9</div><div class="member-name">Responsable Équipe</div><div class="member-role">Coordinateur Hub</div></div>
+                <div class="member-card"><div class="member-avatar">M10</div><div class="member-name">Directrice Espace</div><div class="member-role">Gérante Espace Public Numérique</div></div>
             </div>
         </section>
-
     </div>
 
-    <!-- ==========================================================================
-       4. SCRIPT LOGIQUE : TIMER, ARBRE DE PROGRESSION & VALIDATION
-       ========================================================================== */ -->
     <script>
-        // CONFIGURATION DU TIMER (1h15 = 75 minutes)
         let timerSeconds = 75 * 60;
         let timerInterval = null;
         let isTimerRunning = false;
+        let isPlanningUnlocked = false;
 
         function updateTimerDisplay() {
-            const minutes = Math.floor(timerSeconds / 60);
-            const seconds = timerSeconds % 60;
-            document.getElementById('timer-countdown').innerText = 
-                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            const min = Math.floor(timerSeconds / 60);
+            const sec = timerSeconds % 60;
+            document.getElementById('timer-countdown').innerText = `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
         }
 
         function toggleTimer() {
             const btn = document.getElementById('timer-control-btn');
             if (isTimerRunning) {
-                // Mettre en pause
                 clearInterval(timerInterval);
                 btn.innerText = "Reprendre";
                 isTimerRunning = false;
             } else {
-                // Lancer
                 isTimerRunning = true;
                 btn.innerText = "Pause";
                 timerInterval = setInterval(() => {
                     if (timerSeconds > 0) {
                         timerSeconds--;
                         updateTimerDisplay();
+                        checkUnlockConditions();
                     } else {
                         clearInterval(timerInterval);
                         btn.innerText = "Fin !";
                         btn.disabled = true;
-                        alert("Le temps de jeu d'1h15 est écoulé ! Place au débrief de 15 minutes.");
+                        forceUnlockPlanning();
                     }
                 }, 1000);
             }
         }
 
-        // BASE DE DONNÉES DES 15 MISSIONS INTERCONNECTÉES
         const missions = [
-            // FILIÈRE PROMPTING
-            { id: 1, filiere: "Prompting", niveau: 1, prerequis: null, title: "Le Premier Contact", time: "5 min", difficulty: "Facile", team: "Solo", reward: 30, desc: "Faire saluer l'IA sur un ton médiéval pour initialiser l'environnement." },
-            { id: 2, filiere: "Prompting", niveau: 2, prerequis: 1, title: "La Contrainte de Style", time: "5 min", difficulty: "Facile", team: "Solo", reward: 30, desc: "Forcer l'IA à réécrire un texte professionnel sans utiliser de jargon technique." },
-            { id: 3, filiere: "Prompting", niveau: 3, prerequis: 2, title: "Le Prompt Inversé", time: "8 min", difficulty: "Facile", team: "1-2 pers.", reward: 50, desc: "Ordonner à l'IA de vous poser des questions successives pour deviner une profession." },
-            { id: 4, filiere: "Prompting", niveau: 4, prerequis: 3, title: "Le Duel de Variantes", time: "15 min", difficulty: "Moyen", team: "2 pers.", reward: 80, desc: "Demander simultanément une version purement factuelle et une version axée storytelling." },
+            // BRANCHE INTRO
+            { id: 1, filiere: "Intro", title: "Le Salut de l'Ancien Régime", reward: 30, desc: "Initialiser Gemini : forcer l'IA à saluer et guider l'usager sur un ton médiéval strict.", prerequis: [] },
+            
+            // BRANCHE 1 : KIT EXPRESS
+            { id: 2, filiere: "Kit", title: "Le Séquençage de 2h", reward: 40, desc: "Structurer un déroulé d'atelier complet (Objectifs, étapes, timing) pour débutants.", prerequis: [1] },
+            { id: 3, filiere: "Kit", title: "Le Générateur de QCM", reward: 50, desc: "Générer un quiz interactif de fin de séance adapté au niveau du public cible.", prerequis: [2] },
+            { id: 4, filiere: "Kit", title: "🔮 SECRET : Méta-Quiz Déployé GitHub Pages", reward: 100, desc: "Générer le code HTML d'un quiz, créer un dépôt GitHub et le publier en ligne via GitHub Pages. Fournir l'URL publique.", isSecret: true, check: () => validatedMissions.includes(3) && isBranchComplete("API") },
 
-            // FILIÈRE ANALYSE
-            { id: 5, filiere: "Analyse", niveau: 1, prerequis: null, title: "L'Extracteur de Concepts", time: "5 min", difficulty: "Facile", team: "Solo", reward: 30, desc: "Soumettre 500 mots bruts et faire extraire les 5 points clés indispensables." },
-            { id: 6, filiere: "Analyse", niveau: 2, prerequis: 5, title: "Le Correcteur Impitoyable", time: "5 min", difficulty: "Facile", team: "1-2 pers.", reward: 40, desc: "Donner un texte truffé de fautes de logique et demander une correction argumentée." },
-            { id: 7, filiere: "Analyse", niveau: 3, prerequis: 6, title: "Le Tableau Structuré", time: "12 min", difficulty: "Moyen", team: "1-2 pers.", reward: 70, desc: "Faire trier des données désorganisées dans un tableau Markdown propre." },
-            { id: 8, filiere: "Analyse", niveau: 4, prerequis: 7, title: "L'Analyste de Sentiments", time: "15 min", difficulty: "Moyen", team: "2-3 pers.", reward: 90, desc: "Soumettre des feedbacks fictifs et demander une classification automatisée par gravité." },
+            // BRANCHE 2 : CERVEAU DE STRUCTURE
+            { id: 5, filiere: "Cerveau", title: "L'Indexation Labyrinthe", reward: 40, desc: "Importer des guides d'accès aux droits (CAF, France Travail) dans NotebookLM sans hallucination.", prerequis: [1] },
+            { id: 6, filiere: "Cerveau", title: "L'Assistant Anti-Erreur", reward: 50, desc: "Soumettre un cas d'usager complexe et extraire les justificatifs requis exacts.", prerequis: [5] },
+            { id: 7, filiere: "Cerveau", title: "🔮 SECRET : Podcast d'Orientation Synthétique", reward: 100, desc: "Générer le Guide Audio de synthèse natif de NotebookLM pour vos équipes à partir des ressources importées.", isSecret: true, check: () => validatedMissions.includes(6) && isBranchComplete("Workspace") },
 
-            // FILIÈRE COLLABORATION
-            { id: 9, filiere: "Collaboration", niveau: 1, prerequis: null, title: "L'Avatar de l'Équipe", time: "5 min", difficulty: "Facile", team: "Solo", reward: 30, desc: "Générer une description de persona représentant les compétences réunies de l'équipe." },
-            { id: 10, filiere: "Collaboration", niveau: 2, prerequis: 9, title: "Le Miroir de Réticence", time: "12 min", difficulty: "Moyen", team: "1-2 pers.", reward: 70, desc: "Faire simuler par l'IA le dialogue d'un usager totalement réfractaire à la technologie." },
-            { id: 11, filiere: "Collaboration", niveau: 3, prerequis: 10, title: "L'Architecte d'Atelier", time: "15 min", difficulty: "Moyen", team: "2-3 pers.", reward: 90, desc: "Faire concevoir un séquençage d'animation d'intelligence collective basé sur vos contraintes." },
+            // BRANCHE 3 : GOOGLE AI STUDIO (API)
+            { id: 8, filiere: "API", title: "La Forge de la Clé API", reward: 40, desc: "Se connecter à Google AI Studio avec votre compte Workspace, générer une clé API de test et configurer un prompt système.", prerequis: [1] },
+            { id: 9, filiere: "API", title: "Le Test de Température", reward: 50, desc: "Ajuster les paramètres (temperature, safety settings) dans AI Studio pour formater une réponse brute JSON.", prerequis: [8] },
+            { id: 10, filiere: "API", title: "🔮 SECRET : Le Micro-Générateur Connecté HTML", reward: 100, desc: "Créer une page HTML locale embarquant un script fetch() qui interroge l'API Gemini de votre AI Studio.", isSecret: true, check: () => validatedMissions.includes(9) && isBranchComplete("Kit") },
 
-            // QUÊTES SECRÈTES
-            { id: 12, filiere: "Secrete", conditionTexte: "Requis : 300 pts globaux + Filière Prompting validée (Quête 4)", checkCondition: () => totalScore >= 300 && validatedMissions.includes(4), title: "🔮 Simulateur Cosmique de Crise", time: "20 min", difficulty: "Difficile", team: "3-4 pers.", reward: 150, desc: "Créer un prompt complexe transformant l'IA en un générateur de scénarios de crise d'entreprise." },
-            { id: 13, filiere: "Secrete", conditionTexte: "Requis : 300 pts globaux + Filière Analyse validée (Quête 8)", checkCondition: () => totalScore >= 300 && validatedMissions.includes(8), title: "🔮 L'Auditeur Logique Intégral", time: "25 min", difficulty: "Difficile", team: "3-4 pers.", reward: 200, desc: "Faire analyser un projet fictif complexe pour en déceler toutes les failles de raisonnement cachées." },
-            { id: 14, filiere: "Secrete", conditionTexte: "Requis : 300 pts globaux + Filière Collaboration validée (Quête 11)", checkCondition: () => totalScore >= 300 && validatedMissions.includes(11), title: "🔮 La Charte Unifiée de la Guilde", time: "25 min", difficulty: "Équipe", reward: 250, desc: "Fusionner les sorties des exercices précédents pour éditer la charte commune d'usage éthique de l'IA." },
-            { id: 15, filiere: "Secrete", conditionTexte: "Requis : Avoir validé au moins une autre quête secrète difficile", checkCondition: () => totalScore >= 300 && (validatedMissions.includes(12) || validatedMissions.includes(13) || validatedMissions.includes(14)), title: "🔮 L'Épreuve Ultime du Grand Prompt", time: "30 min", difficulty: "Difficile", team: "Tous", reward: 300, desc: "Rédiger un méta-prompt réutilisable résumant l'intégralité des acquis de la session d'1h15." }
+            // BRANCHE 4 : PRODUCTIVITÉ GOOGLE WORKSPACE
+            { id: 11, filiere: "Workspace", title: "Le Décrypteur de Réunion (Meet)", reward: 40, desc: "Utiliser Gemini Workspace dans Docs pour analyser le transcript d'une longue réunion d'équipe et extraire un tableau d'actions.", prerequis: [1] },
+            { id: 12, filiere: "Workspace", title: "Le Cartographe de Documents (Drive)", reward: 50, desc: "Sélectionner 3 à 5 documents disparates de votre Drive et demander à Gemini d'en extraire une synthèse croisée et un plan d'arborescence idéal.", prerequis: [11] },
+            { id: 13, filiere: "Workspace", title: "🔮 SECRET : Base de Connaissances Hybride", reward: 100, desc: "Prendre les synthèses Workspace générées et les importer dans un carnet NotebookLM pour créer un assistant expert croisé.", isSecret: true, check: () => validatedMissions.includes(12) && isBranchComplete("Cerveau") },
+
+            // CONCLUSION
+            { id: 14, filiere: "Conclusion", title: "L'Épreuve Collective Finale", reward: 150, desc: "Générer la méta-charte d'usage éthique, technique et partagée de la Guilde des médiateurs numériques.", prerequis: [], isFinal: true }
         ];
 
         let totalScore = 0;
         let validatedMissions = [];
 
         function switchTab(tabId) {
+            if (tabId === 'planning' && !isPlanningUnlocked) return;
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
-            event.currentTarget.classList.add('active');
+            document.getElementById(`btn-tab-${tabId}`).classList.add('active');
+        }
+
+        function tryOpeningPlanning() {
+            if (!isPlanningUnlocked) {
+                alert("🔒 Zone verrouillée. Accessible dès que les quêtes sont terminées ou à l'échéance du temps imparti.");
+            } else {
+                switchTab('planning');
+            }
+        }
+
+        function isBranchComplete(branchName) {
+            const branchQuests = missions.filter(m => m.filiere === branchName && !m.isSecret);
+            return branchQuests.every(m => validatedMissions.includes(m.id));
         }
 
         function isMissionAccessible(m) {
-            if (m.filiere === "Secrete") {
-                return m.checkCondition();
+            if (m.isFinal) {
+                return totalScore >= 400 && validatedMissions.includes(1);
             }
-            if (m.prerequis === null) {
-                return true;
+            if (m.isSecret) {
+                return m.check();
             }
-            return validatedMissions.includes(m.prerequis);
+            if (m.prerequis.length === 0) return true;
+            return validatedMissions.includes(m.prerequis[0]);
+        }
+
+        function checkUnlockConditions() {
+            if (validatedMissions.length === missions.length || timerSeconds <= 0) {
+                forceUnlockPlanning();
+            }
+        }
+
+        function forceUnlockPlanning() {
+            if (!isPlanningUnlocked) {
+                isPlanningUnlocked = true;
+                const tabBtn = document.getElementById('btn-tab-planning');
+                tabBtn.classList.remove('tab-locked');
+                tabBtn.classList.add('tab-unlocked');
+                tabBtn.innerText = "🔓 Résultats Secrets";
+            }
         }
 
         function renderAllGrids() {
-            const categories = ["Prompting", "Analyse", "Collaboration", "Secrete"];
+            const categories = ["Intro", "Kit", "Cerveau", "API", "Workspace", "Conclusion"];
             categories.forEach(cat => {
                 const grid = document.getElementById(`grid-${cat.toLowerCase()}`);
+                if (!grid) return;
                 grid.innerHTML = '';
                 
                 const filtered = missions.filter(m => m.filiere === cat);
-                
                 filtered.forEach(m => {
                     const accessible = isMissionAccessible(m);
                     const completed = validatedMissions.includes(m.id);
-                    
                     const card = document.createElement('div');
                     card.className = `mission-card ${!accessible && !completed ? 'locked' : ''}`;
                     
                     if (!accessible && !completed) {
-                        let texteVerrou = m.filiere === "Secrete" ? m.conditionTexte : `Bloqué : Accomplir la quête précédente de cette filière`;
+                        let lockText = m.isFinal ? "Bloqué : Requis 400 PTS collectifs" : (m.isSecret ? "Verrou Secret Inter-Branches (Compléter la branche associée)" : "Faites la quête précédente");
                         card.innerHTML = `
-                            <div class="lock-overlay">
-                                <div class="lock-icon">🔒</div>
-                                <div style="font-size:12px;">${texteVerrou}</div>
-                            </div>
-                            <div class="mission-content">
-                                <div class="mission-header"><div class="mission-title">${m.title}</div></div>
-                            </div>
+                            <div class="lock-overlay"><div class="lock-icon">🔒</div><div style="font-size:11px; max-width:90%;">${lockText}</div></div>
+                            <div class="mission-content"><div class="mission-header"><div class="mission-title">${m.title}</div></div></div>
                         `;
                     } else {
                         card.innerHTML = `
                             <div>
                                 <div class="tag-container">
-                                    <span class="tag-hoc filiere-${m.filiere}">⏱️ ${m.time}</span>
-                                    <span class="tag-hoc">${m.team}</span>
-                                    <span class="tag-hoc">${m.difficulty}</span>
+                                    <span class="tag-hoc filiere-${m.filiere}">${m.filiere}</span>
+                                    <span class="tag-hoc">Actif</span>
                                 </div>
                                 <div class="mission-header">
                                     <div class="mission-title">${m.title}</div>
                                     <div class="mission-reward">+${m.reward} PTS</div>
                                 </div>
                                 <div class="mission-desc">${m.desc}</div>
-                                
                                 ${!completed ? `
                                     <div class="proof-zone">
-                                        <label class="proof-label" for="proof-${m.id}">Preuve de validation requise :</label>
-                                        <textarea class="proof-input" id="proof-${m.id}" placeholder="Collez ici le prompt utilisé ou le livrable clé généré par l'IA..." oninput="checkProofInput(${m.id})"></textarea>
+                                        <label class="proof-label" for="proof-${m.id}">Livrable, Prompt ou URL publique :</label>
+                                        <textarea class="proof-input" id="proof-${m.id}" rows="2" placeholder="Saisir la trace textuelle d'exécution..." oninput="checkProof(${m.id})"></textarea>
                                     </div>
                                 ` : ''}
                             </div>
                             <button class="action-btn ${completed ? 'completed' : ''}" id="btn-${m.id}" ${!completed ? 'disabled' : ''} onclick="validateQuest(${m.id}, ${m.reward})">
-                                ${completed ? '✓ Quête Validée' : 'Soumettre la preuve'}
+                                ${completed ? '✓ Objectif Atteint' : 'Soumettre la Preuve'}
                             </button>
                         `;
                     }
@@ -671,14 +782,11 @@
             });
         }
 
-        function checkProofInput(id) {
+        function checkProof(id) {
             const input = document.getElementById(`proof-${id}`);
             const btn = document.getElementById(`btn-${id}`);
-            if (input.value.trim().length > 10) {
-                btn.disabled = false;
-            } else {
-                btn.disabled = true;
-            }
+            if (input && input.value.trim().length > 8) btn.disabled = false;
+            else if (btn) btn.disabled = true;
         }
 
         function validateQuest(id, reward) {
@@ -688,23 +796,24 @@
                 
                 document.getElementById('guild-score').innerText = totalScore;
                 document.getElementById('global-score-metric').innerText = totalScore;
-                document.getElementById('count-total').innerText = `${validatedMissions.length}/15`;
+                document.getElementById('count-total').innerText = `${validatedMissions.length}/14`;
                 
                 updateRank();
+                checkUnlockConditions();
                 renderAllGrids();
             }
         }
 
         function updateRank() {
             const badge = document.getElementById('guild-rank');
-            if (totalScore >= 500) {
-                badge.innerText = "Maîtres de la Co-Design IA";
+            if (totalScore >= 400) {
+                badge.innerText = "Architectes de l'Inclusion";
                 badge.style.backgroundColor = "#385723";
-            } else if (totalScore >= 250) {
-                badge.innerText = "Compagnons du Prompt";
+            } else if (totalScore >= 150) {
+                badge.innerText = "Praticiens du Cloud";
                 badge.style.backgroundColor = "#7F6000";
             } else {
-                badge.innerText = "Apprentis IA";
+                badge.innerText = "Novices de l'IA Workspace";
             }
         }
 
