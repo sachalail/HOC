@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L'Histoire de l'IA - House of CoDesign</title>
+    <style>
+        /* ==========================================================================
+           1. SYSTEME DE DESIGN & IDENTITÉ VISUELLE HOC
+           ========================================================================== */
+        :root {
+            --primary-color: #f15a24;    /* Orange HOC officiel */
+            --dark-color: #1a1a1a;       /* Anthracite HOC */
+            --light-bg: #f9f9f9;
+            --card-bg: #ffffff;
+            --border-color: #e0e0e0;
+            --text-muted: #666666;
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            
+            --tag-tech-bg: #e3f2fd;
+            --tag-tech-text: #1e88e5;
+            --tag-crea-bg: #f3e5f5;
+            --tag-crea-text: #8e24aa;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Arial', 'Helvetica', sans-serif;
+            color: var(--dark-color);
+            background-color: var(--light-bg);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* ==========================================================================
+           2. BARRE DE NAVIGATION (Menu Fixe)
+           ========================================================================== */
+        header {
+            position: sticky;
+            top: 0;
+            background-color: var(--card-bg);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+        }
+
+        .logo {
+            font-weight: bold;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+            color: var(--dark-color);
+        }
+        .logo span {
+            color: var(--primary-color);
+        }
+
+        nav {
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-tab {
+            background: none;
+            border: none;
+            padding: 10px 18px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: var(--transition-smooth);
+        }
+
+        .nav-tab:hover, .nav-tab.active {
+            color: var(--primary-color);
+            background-color: rgba(241, 90, 36, 0.05);
+        }
+
+        /* ==========================================================================
+           3. STRUCTURE DES SECTIONS
+           ========================================================================== */
+        main {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        section {
+            margin-bottom: 80px;
+            scroll-margin-top: 100px;
+        }
+
+        .section-title {
+            font-size: 2.2rem;
+            border-left: 5px solid var(--primary-color);
+            padding-left: 15px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 40px;
+        }
+
+        /* ==========================================================================
+           4. TIMELINE CHRONOLOGIQUE + BOUTONS DE NAVIGATION INTERACTIFS
+           ========================================================================== */
+        .timeline-container {
+            position: relative;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 60px 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+            margin-bottom: 50px;
+        }
+
+        .timeline-line {
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 40px 0;
+            padding: 0 10px;
+        }
+
+        .timeline-line::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background-color: var(--border-color);
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+
+        .timeline-node {
+            position: relative;
+            z-index: 2;
+            background: var(--card-bg);
+            border: 3px solid var(--border-color);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        .timeline-node:hover, .timeline-node.active {
+            border-color: var(--primary-color);
+            background: var(--primary-color);
+            transform: scale(1.3);
+            box-shadow: 0 0 10px rgba(241, 90, 36, 0.4);
+        }
+
+        .timeline-node-year {
+            position: absolute;
+            top: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: var(--dark-color);
+            white-space: nowrap;
+            transition: var(--transition-smooth);
+        }
+
+        .timeline-node.active .timeline-node-year {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+        }
+
+        .timeline-navigation-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-top: 50px;
+        }
+
+        .timeline-nav-btn {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--dark-color);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            transition: var(--transition-smooth);
+            user-select: none;
+            flex-shrink: 0;
+        }
+
+        .timeline-nav-btn:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            box-shadow: 0 4px 10px rgba(241, 90, 36, 0.1);
+        }
+
+        .timeline-nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            border-color: var(--border-color);
+            color: var(--text-muted);
+            box-shadow: none;
+        }
+
+        .timeline-display-card {
+            background-color: var(--light-bg);
+            border-left: 4px solid var(--primary-color);
+            border-radius: 0 6px 6px 0;
+            padding: 30px;
+            min-height: 180px;
+            flex-grow: 1;
+            transition: var(--transition-smooth);
+        }
+
+        .display-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--dark-color);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .display-era-tag {
+            font-size: 0.8rem;
+            background-color: rgba(241, 90, 36, 0.1);
+            color: var(--primary-color);
+            padding: 4px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .display-text {
+            font-size: 1.05rem;
+            color: var(--dark-color);
+        }
+
+        .display-anecdote {
+            margin-top: 15px;
+            font-style: italic;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            border-top: 1px dashed var(--border-color);
+            padding-top: 10px;
+        }
+
+        /* ==========================================================================
+           5. GRILLES ET ENCARTS ACTEURS (Modifiés avec liens cliquables)
+           ========================================================================== */
+        .grid-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+            margin-bottom: 40px;
+        }
+
+        .actor-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .info-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 25px;
+            transition: var(--transition-smooth);
+            position: relative;
+            height: 100%;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            border-color: var(--primary-color);
+        }
+
+        .info-card h3 {
+            font-size: 1.25rem;
+            color: var(--dark-color);
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .actor-type {
+            font-size: 0.75rem;
+            font-weight: bold;
+            padding: 3px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            flex-shrink: 0;
+        }
+        .actor-type.physique { background-color: var(--tag-tech-bg); color: var(--tag-tech-text); }
+        .actor-type.morale { background-color: var(--tag-crea-bg); color: var(--tag-crea-text); }
+
+        .actor-meta {
+            font-size: 0.85rem;
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        .info-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .info-card::after {
+            content: "↗";
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            font-size: 0.9rem;
+            color: var(--border-color);
+            transition: var(--transition-smooth);
+        }
+        .info-card:hover::after {
+            color: var(--primary-color);
+            transform: translate(2px, -2px);
+        }
+
+        /* ==========================================================================
+           6. COMPOSANTS CHIFFRES CLES
+           ========================================================================== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-box {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 35px 25px;
+            text-align: center;
+            transition: var(--transition-smooth);
+        }
+
+        .stat-box:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 5px 15px rgba(241, 90, 36, 0.1);
+        }
+
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--dark-color);
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+
+        footer {
+            background-color: var(--dark-color);
+            color: #ffffff;
+            padding: 40px 20px;
+            margin-top: 80px;
+            font-size: 0.9rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <div class="logo">HOUSE OF <span>CODESIGN</span></div>
+            <nav id="mainNav">
+                <a href="#timeline-section" class="nav-tab active">Chronologie</a>
+                <a href="#acteurs-section" class="nav-tab">Grands Acteurs</a>
+                <a href="#metrics-section" class="nav-tab">Chiffres Clés</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+
+        <!-- SECTION 1 : FRISE CHRONOLOGIQUE -->
+        <section id="timeline-section">
+            <h2 class="section-title">75 Ans d'Intelligence Artificielle</h2>
+            <p class="subtitle">Sélectionnez les jalons de la frise centrale ou utilisez les boutons pour parcourir l'histoire.</p>
+            
+            <div class="timeline-container">
+                <div class="timeline-line">
+                    <div class="timeline-node active" onclick="updateTimeline(0)"><span class="timeline-node-year">1950</span></div>
+                    <div class="timeline-node" onclick="updateTimeline(1)"><span class="timeline-node-year">1956</span></div>
+                    <div class="timeline-node" onclick="updateTimeline(2)"><span class="timeline-node-year">1974</span></div>
+                    <div class="timeline-node" onclick="updateTimeline(3)"><span class="timeline-node-year">1980</span></div>
+                    <div class="timeline-node" onclick="updateTimeline(4)"><span class="timeline-node-year">1997</span></div>
+                    <div class="timeline-node" onclick="updateTimeline(5)"><span class="timeline-node-year">2012</span></div>
+                    <div class="timeline-node" onclick="updateTimeline(6)"><span class="timeline-node-year">2017</span></div>
+                    <div class="timeline-node" onclick="updateTimeline(7)"><span class="timeline-node-year">2022</span></div>
+                    <div class="timeline-node" onclick="updateTimeline(8)"><span class="timeline-node-year">2026</span></div>
+                </div>
+
+                <div class="timeline-navigation-wrapper">
+                    <button class="timeline-nav-btn" id="prevBtn" onclick="prevStep()" disabled>←</button>
+                    
+                    <div class="timeline-display-card" id="timelineDisplay">
+                        <div class="display-title">
+                            <span id="displayYear">1950</span> : <span id="displayEvent">Le Test de Turing</span>
+                            <span class="display-era-tag" id="displayEra">Fondations théoriques</span>
+                        </div>
+                        <div class="display-text" id="displayText">
+                            Alan Turing publie son article fondateur 'Computing Machinery and Intelligence' et introduit le célèbre test d'imitation.
+                        </div>
+                        <div class="display-anecdote" id="displayAnecdote">
+                            💡 Anecdote : Turing prédisait que les machines réussiraient à tromper 30% des juges en l'an 2000.
+                        </div>
+                    </div>
+
+                    <button class="timeline-nav-btn" id="nextBtn" onclick="nextStep()">→</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2 : FICHES PERSONNAGES & ENTREPRISES FORMATÉES ("Année célèbre - Nom") -->
+        <section id="acteurs-section">
+            <h2 class="section-title">Grands Acteurs de l'IA</h2>
+            
+            <h3 style="margin-top: 30px; margin-bottom: 10px; font-size: 1.5rem; color: var(--dark-color); text-transform: uppercase; border-bottom: 2px solid var(--border-color); padding-bottom: 5px;">9 Personnes clés</h3>
+            <div class="grid-layout">
+                <!-- Personne 1 -->
+                <a href="https://fr.wikipedia.org/wiki/Alan_Turing" target="_blank" class="actor-link">
+                    <div class="info-card">
+                        <h3>1950 - Alan Turing <span class="actor-type physique">Physique</span></h3>
+                        <div class="actor-meta">Test de Turing</div>
+                        <p>Il publie son article fondateur Computing Machinery and Intelligence et y introduit le "jeu de l'imitation" (le Test de Turing) pour définir la machine pensante.</p>
+                    </div>
+                </a>
+
+                <!-- Personne 2 -->
+                <a href="https://fr.wikipedia.org/wiki/John_McCarthy" target="_blank" class="actor-link">
+                    <div class="info-card">
+                        <h3>1956 - John McCarthy <span class="actor-type physique">Physique</span></h3>
+                        <div class="actor-meta">Conférence de Dartmouth</div>
+                        <p>Il organise la célèbre conférence de Dartmouth et invente officiellement le terme « Intelligence Artificielle ».</p>
+                    </div>
+                </a>
+
+                <!-- Personne 3 -->
+                <a href="https://fr.wikipedia.org/wiki/Geoffrey_Hinton" target="_blank" class="actor-link">
+                    <div class="info-card">
+                        <h3>1986 - Geoffrey Hinton <span class="actor-type physique">Physique</span></h3>
+                        <div class="actor-meta">Rétropropagation</div>
+                        <p>Il popularise l'algorithme de rétropropagation (backpropagation), indispensable aujourd'hui pour entraîner les réseaux de neurones profonds.</p>
+                    </div>
+                </a>
+
+                <!-- Personne 4 -->
+                <a href="https://fr.wikipedia.org/wiki/Yann_LeCun" target="_blank" class="actor-link">
+                    <div class="info-card">
+                        <h3>1989 - Yann LeCun <span class="actor-type physique">Physique</span></h3>
+                        <div class="actor-meta">Réseaux Convolutionnels (CNN)</div>
+                        <p>Il développe les réseaux de neurones convolutifs (CNN), révolutionnant la reconnaissance d'images (lecture des chèques bancaires).</p>
+                    </div>
+                </a>
+
+                <!-- Personne 5 -->
+                <a href="https://fr.wikipedia.org/wiki/Demis_Hassabis" target="_blank" class="actor-link">
+                    <div class="info-card">
+                        <h3>2016 - Demis Hassabis <span class="actor-type physique">Physique</span></h3>
+                        <div class="actor-meta">AlphaGo & DeepMind</div>
+                        <p>Son programme AlphaGo (DeepMind) bat le champion du monde du jeu de Go, un exploit que l'on pensait impossible avant une décennie.</p>
+                    </div>
+                </a>
+
+                <!-- Personne 6 -->
+                <a href="https://fr.wikipedia.org/wiki/Fei-Fei_Li" target="_blank" class="actor-link">
+                    <div class="info-card">
+                        <h3>2017 - Fei-Fei Li <span class="actor-type physique">Physique</span></h3>
+                        <div class="actor-meta">ImageNet & Deep Learning</div>
+                        <p>Son projet ImageNet (base de données de millions d'images) atteint sa maturité, servant de carburant indispensable au boom du Deep Learning.</p>
+                    </div>
+                </a>
+
+                <!-- Personne 7 -->
+                <a href="https://fr.wikipedia.org/wiki/Ilya_Sutskever" target="_blank" class="actor-link">
+                    <div class="info-card">
+                        <h3>2020 - Ilya Sutskever <span class="actor-type physique">Physique</span></h3>
+                        <div class="actor-meta">Grands Modèles de Langage</div>
+                        <p>Scientifique en chef d'OpenAI, il supervise la création de GPT-3, prouvant au monde la puissance phénoménale des grands modèles de langage (LLM).</p>
+                    </div>
+                </a>
+
+                <!-- Personne 8 -->
+                <a href="https://fr.wikipedia.org/wiki/Sam_Altman" target="_blank" class="actor-link">
+                    <div class="info-card">
+                        <h3>2022 - Sam Altman <span class="actor-type physique">Physique</span></h3>
+                        <div class="actor-meta">Démocratisation Générative</div>
+                        <p>En tant que PDG d'OpenAI, il orchestre le lancement public de ChatGPT, déclenchant la vague actuelle de l'IA générative mondiale.</p>
+                    </div>
+                </a>
+
+                <!-- Personne 9 -->
+                <a href="https://fr.wikipedia.org/wiki/Jensen_Huang" target="_blank" class="actor-link">
+                    <div class="info-card">
+                        <h3>2023 - Jensen Huang <span class="actor-type physique">Physique</span></h3>
+                        <div class="actor-meta">Infrastructure GPU</div>
+                        <p>Le patron de NVIDIA devient la figure centrale de l'IA lorsque son entreprise franchit les 1 000 milliards de dollars de capitalisation, ses puces (GPU) étant indispensables pour faire tourner toute l'IA moderne.</p>
+                    </div>
+                </a>
+            </div>
+
+            <h3 style="margin-top: 50px; margin-bottom: 10px; font-size: 1.5rem; color: var(--dark-color); text-transform: uppercase; border-bottom: 2px solid var(--border-color); padding-bottom: 5px;">9 Entreprises majeures</h3>
+            <div class="grid-layout">
+                <!-- Entreprise 1 -->
+                <a href="https://fr.wikipedia.org/wiki/IBM" target="_blank" class="actor-link">
+                    <div class="info-card">
+                        <h3>1997 - IBM <span class="actor-type morale">Morale</span></h3>
+                        <div class="actor-meta">Victoire aux Échecs</div>
+                        <p>Son superordinateur Deep Blue bat le champion du monde d'échecs Garry Kasparov, premier séisme médiatique de l'histoire de l'informatique.</p>
+                    </div>
+                </a>
+
+                <!-- Entreprise 2 -->
+                <a href="https://fr.wikipedia.org/wiki/Google" target="_blank" class="actor-link">
+                    <div class="info-card">
+                        <h3>2014 - Google <span class="actor-type morale">Morale</span></h3>
+                        <div class="actor-meta">Virage AI-First</div>
+                        <p>Le géant rachète la startup DeepMind pour plus de 500 millions de dollars, signalant son virage massif vers une stratégie "AI-first".</p>
+                    </div>
+                </a>
+
+                <!-- Entreprise 3 -->
+                <a href="https://fr.wikipedia.org/wiki/OpenAI" target="_blank" class="actor-link">
+                    <div class="info-card">
+                        <h3>2015 - OpenAI <span class="actor-type morale">Morale</span></h3>
+                        <div class="actor-meta">Mission AGI</div>
+                        <p>Fondation du laboratoire (à l'origine à but non lucratif) avec pour mission de créer une IA générale (AGI) qui profite à l'humanité.</p>
+                    </div>
+                </a>
+
+                <!-- Entreprise 4 -->
+                <a href="https://fr.wikipedia.org/wiki/Nvidia" target="_blank" class="actor-link">
+                    <div class="info-card">
+                        <h3>2016 - NVIDIA <span class="actor-type morale">Morale</span></h3>
+                        <div class="actor-meta">Transition Technologique</div>
+                        <p>Jensen Huang livre personnellement le premier supercalculateur DGX-1 dédié à l'IA à OpenAI, actant la transition de l'entreprise des jeux vidéo vers l'IA.</p>
+                    </div>
+                </a>
+
+                <!-- Entreprise 5 -->
+                <a href="https://fr.wikipedia.org/wiki/Meta_(entreprise)" target="_blank" class="actor-link">
+                    <div class="info-card">
+                        <h3>2023 - Meta (Facebook) <span class="actor-type morale">Morale</span></h3>
+                        <div class="actor-meta">Révolution Open-Source</div>
+                        <p>L'entreprise publie LLaMA, bousculant l'écosystème en donnant un accès "open-source" (modèle ouvert) à un modèle de langage ultra-performant.</p>
+                    </div>
+                </a>
+
+                <!-- Entreprise 6 -->
+                <a href="https://fr.wikipedia.org/wiki/Microsoft" target="_blank" class="actor-link">
+                    <div class="info-card">
+                        <h3>2023 - Microsoft <span class="actor-type morale">Morale</span></h3>
+                        <div class="actor-meta">Copilot & Intégration</div>
+                        <p>En injectant 10 milliards de dollars dans OpenAI et en intégrant Copilot partout dans Windows et Office, Microsoft devient le leader commercial de l'IA d'entreprise.</p>
+                    </div>
+                </a>
+
+                <!-- Entreprise 7 -->
+                <a href="https://fr.wikipedia.org/wiki/Anthropic" target="_blank" class="actor-link">
+                    <div class="info-card">
+                        <h3>2024 - Anthropic <span class="actor-type morale">Morale</span></h3>
+                        <div class="actor-meta">Logique & Sécurité</div>
+                        <p>Fondée par des anciens d'OpenAI, l'entreprise s'impose comme le rival n°1 avec sa famille de modèles Claude, particulièrement réputés pour leur logique et leur sécurité.</p>
+                    </div>
+                </a>
+
+                <!-- Entreprise 8 -->
+                <a href="https://fr.wikipedia.org/wiki/Midjourney" target="_blank" class="actor-link">
+                    <div class="info-card">
+                        <h3>2024 - Midjourney <span class="actor-type morale">Morale</span></h3>
+                        <div class="actor-meta">Génération d'images</div>
+                        <p>La petite équipe indépendante devient le symbole de la révolution de l'IA générative d'images par texte, atteignant des millions d'utilisateurs sans aucun financement extérieur majeur.</p>
+                    </div>
+                </a>
+
+                <!-- Entreprise 9 -->
+                <a href="https://en.wikipedia.org/wiki/XAI_(company)" target="_blank" class="actor-link">
+                    <div class="info-card">
+                        <h3>2025 - xAI <span class="actor-type morale">Morale</span></h3>
+                        <div class="actor-meta">Supercalculateur Colossus</div>
+                        <p>Fondée par Elon Musk, l'entreprise lève des milliards et met en service le supercalculateur "Colossus" (100 000 puces Nvidia), l'un des plus puissants au monde pour entraîner son IA Grok.</p>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- SECTION 3 : CHIFFRES CLÉS FACTUELS -->
+        <section id="metrics-section">
+            <h2 class="section-title">Chiffres Clés Historiques</h2>
+            <p class="subtitle">Indicateurs marquants ayant jalonné l'évolution de la puissance de l'Intelligence Artificielle.</p>
+
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-number">1956</div>
+                    <div class="stat-label">Année de création officielle<br>du terme "IA"</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">200 M</div>
+                    <div class="stat-label">Positions par seconde évaluées<br>par Deep Blue (1997)</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">100 M</div>
+                    <div class="stat-label">Utilisateurs actifs atteints par<br>ChatGPT en 2 mois (2022)</div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div>
+                <h4>HOUSE OF CODESIGN</h4>
+                <p style="margin-top: 5px; color: #999;">Entreprise à Mission — Mars 2026</p>
+            </div>
+            <div>
+                <p>© 2026 HOC. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- INTERACTIVITÉ JAVASCRIPT -->
+    <script>
+        let currentTimelineIndex = 0;
+
+        const timelineData = [
+            { year: "1950", event: "Le Test de Turing", era: "Fondations théoriques", text: "Alan Turing publie son article fondateur 'Computing Machinery and Intelligence' et introduit le célèbre test d'imitation.", anecdote: "💡 Anecdote : Turing prédisait que les machines réussiraient à tromper 30% des juges en l'an 2000." },
+            { year: "1956", event: "La Conférence de Dartmouth", era: "Naissance officielle", text: "John McCarthy, Marvin Minsky, Claude Shannon et Nathaniel Rochester organisent un atelier d'été fondateur. McCarthy y invente officiellement le terme d'« Intelligence Artificielle ».", anecdote: "💡 Note de l'histoire : L'optimisme est alors immense, les chercheurs pensent régler le problème en une génération." },
+            { year: "1974", event: "Le Premier Hiver de l'IA", era: "Désillusion", text: "Suite au rapport dévastateur de Lighthill, les financements publics s'effondrent. Les ordinateurs sont jugés trop lents.", anecdote: "💡 Leçon : Une phase de surmédiatisation non suivie de résultats concrets mène à un hiver budgétaire." },
+            { year: "1980", event: "L'Essor des Systèmes Experts", era: "Renaissance", text: "L'IA renaît commercialement au travers des systèmes experts basés sur des règles logiques 'If-Then'.", anecdote: "💡 Impact : La réintroduction de la Rétropropagation offre un nouvel élan aux réseaux neuronaux." },
+            { year: "1997", event: "Deep Blue bat Garry Kasparov", era: "Progrès Graduel", text: "Le superordinateur Deep Blue d'IBM bat le champion du monde en titre d'échecs grâce à une puissance de calcul brute monumentale.", anecdote: "💡 Transition : Création du dataset MNIST par Yann LeCun en 1998." },
+            { year: "2012", event: "AlexNet et le Deep Learning", era: "Révolution Numérique", text: "L'architecture AlexNet écrase la compétition ImageNet en reconnaissance visuelle, validant définitivement l'efficacité des réseaux de neurones profonds sur GPU.", anecdote: "💡 Tournant : L'intégralité de l'industrie bascule vers ces architectures." },
+            { year: "2017", event: "L'Architecture Transformer", era: "Ère des Transformers", text: "Google Brain publie 'Attention is All You Need', remplaçant les anciens modèles séquentiels par un mécanisme d'attention pure.", anecdote: "💡 Impact direct : Fondation absolue de tous les grands modèles de langage modernes (LLMs)." },
+            { year: "2022", event: "L'Explosion avec ChatGPT", era: "IA Générative", text: "OpenAI lance ChatGPT. En associant un modèle surpuissant à une interface fluide, l'outil bat tous les records historiques de vitesse d'adoption.", anecdote: "💡 Citation : Événement décrit comme le véritable « moment iPhone » de l'IA." },
+            { year: "2026", event: "Agents Autonomes", era: "Horizons Futurs", text: "L'IA franchit l'étape des modèles de pur raisonnement. Le marché se structure autour d'écosystèmes d'agents collaboratifs autonomes.", anecdote: "💡 Statut : Plus de 70% des entreprises intègrent nativement des flux automatisés par l'IA." }
+        ];
+
+        function updateTimeline(index) {
+            currentTimelineIndex = index;
+            
+            const nodes = document.querySelectorAll('.timeline-node');
+            nodes.forEach((node, i) => node.classList.toggle('active', i === index));
+
+            document.getElementById('prevBtn').disabled = (index === 0);
+            document.getElementById('nextBtn').disabled = (index === timelineData.length - 1);
+
+            const data = timelineData[index];
+            const card = document.getElementById('timelineDisplay');
+            
+            card.style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('displayYear').innerText = data.year;
+                document.getElementById('displayEvent').innerText = data.event;
+                document.getElementById('displayEra').innerText = data.era;
+                document.getElementById('displayText').innerText = data.text;
+                document.getElementById('displayAnecdote').innerText = data.anecdote;
+                card.style.opacity = '1';
+            }, 150);
+        }
+
+        function nextStep() {
+            if (currentTimelineIndex < timelineData.length - 1) {
+                updateTimeline(currentTimelineIndex + 1);
+            }
+        }
+
+        function prevStep() {
+            if (currentTimelineIndex > 0) {
+                updateTimeline(currentTimelineIndex - 1);
+            }
+        }
+
+        const sections = document.querySelectorAll('section');
+        const navTabs = document.querySelectorAll('.nav-tab');
+
+        window.addEventListener('scroll', () => {
+            let activeSectionId = "";
+            sections.forEach(section => {
+                if (window.pageYOffset >= section.offsetTop - 150) {
+                    activeSectionId = section.getAttribute('id');
+                }
+            });
+            navTabs.forEach(tab => {
+                tab.classList.toggle('active', tab.getAttribute('href') === `#${activeSectionId}`);
+            });
+        });
+    </script>
+</body>
+</html>
