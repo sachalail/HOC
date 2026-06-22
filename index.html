@@ -139,6 +139,7 @@
             margin-bottom: 30px;
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 10px;
+            flex-wrap: wrap;
         }
 
         .tab-btn {
@@ -396,6 +397,140 @@
             cursor: not-allowed;
         }
 
+        /* ==========================================================================
+           MODIFICATIONS / AJOUTS POUR LE MODULE ASTUCES & SOLUTIONS
+           ========================================================================== */
+        .filter-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background-color: var(--white);
+            border: 1px solid var(--border-color);
+            padding: 10px 18px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 4px;
+            text-transform: uppercase;
+            transition: all 0.2s ease;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background-color: var(--primary-orange);
+            color: var(--white);
+            border-color: var(--primary-orange);
+        }
+
+        .quest-help-card {
+            background-color: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .quest-help-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 1px dashed var(--border-color);
+            padding-bottom: 12px;
+            margin-bottom: 15px;
+        }
+
+        .quest-original-desc {
+            font-size: 13px;
+            font-style: italic;
+            color: #666;
+            background: #F8F8FA;
+            padding: 8px 12px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+
+        .tools-box {
+            margin-bottom: 15px;
+        }
+
+        .tools-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            font-weight: bold;
+            color: #777;
+            margin-bottom: 6px;
+        }
+
+        .tool-badge {
+            display: inline-block;
+            background-color: #ECECEC;
+            color: #444;
+            padding: 3px 8px;
+            font-size: 11px;
+            font-weight: bold;
+            border-radius: 4px;
+            margin-right: 6px;
+        }
+
+        .solution-trigger-btn {
+            background-color: var(--dark-charcoal);
+            color: var(--white);
+            border: none;
+            padding: 10px 16px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-size: 11px;
+            width: 100%;
+            text-align: center;
+            transition: background-color 0.2s;
+        }
+
+        .solution-trigger-btn:hover {
+            background-color: var(--primary-orange);
+        }
+
+        .step-by-step-content {
+            display: none;
+            margin-top: 15px;
+            background-color: #FFFDFB;
+            border-left: 3px solid var(--primary-orange);
+            padding: 15px 20px;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .step-by-step-content.open {
+            display: block;
+        }
+
+        .step-item {
+            margin-bottom: 12px;
+            font-size: 13px;
+        }
+
+        .step-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .step-number {
+            font-weight: bold;
+            color: var(--primary-orange);
+        }
+
+        .no-hints-message {
+            background-color: var(--white);
+            border: 2px dashed var(--lock-grey);
+            padding: 30px;
+            text-align: center;
+            border-radius: 6px;
+            color: #666;
+            font-weight: bold;
+        }
+
         /* RESULTS WORKSPACE */
         .team-roster {
             display: grid;
@@ -484,12 +619,12 @@
 
         <nav class="navigation-tabs">
             <button class="tab-btn active" id="btn-tab-board" onclick="switchTab('board')">Arbre des Missions</button>
+            <button class="tab-btn" id="btn-tab-hints" onclick="switchTab('hints')">💡 Astuces & Méthodologie</button>
             <button class="tab-btn" id="btn-tab-guild" onclick="switchTab('guild')">Membres de la Guilde</button>
             <button class="tab-btn tab-locked" id="btn-tab-planning" onclick="tryOpeningPlanning()">🔒 Résultats Secrets</button>
         </nav>
 
         <section id="board" class="tab-content active">
-            
             <div class="key-metrics">
                 <div class="metric-block">
                     <div class="metric-number" id="count-total">0/14</div>
@@ -511,7 +646,7 @@
             <div class="tree-branch-title">🔥 Branche 1 : Kit d'Animation Express (Gemini App)</div>
             <div class="mission-grid" id="grid-kit"></div>
 
-            <div class="tree-branch-title">📊 Branche 2 : Cerveau de la Structure (NotebookLM)</div>
+            <div class="tree-branch-title">📊 Branche 2 : Le Cerveau Pédagogique Pix (NotebookLM)</div>
             <div class="mission-grid" id="grid-cerveau"></div>
 
             <div class="tree-branch-title">⚡ Branche 3 : Initiation aux API (Google AI Studio)</div>
@@ -522,6 +657,26 @@
 
             <div class="tree-branch-title">🔒 Branche Finale de Clôture</div>
             <div class="mission-grid" id="grid-conclusion"></div>
+        </section>
+
+        <section id="hints" class="tab-content">
+            <div class="info-card">
+                <h3>📚 Guide de Résolution Autonome Apprenants</h3>
+                <p>Une quête vous bloque ? Sélectionnez la filière ci-dessous. <strong>Note :</strong> Seules les quêtes actuellement accessibles ou validées dans votre Arbre des Missions affichent leur méthodologie ici afin de respecter votre progression naturelle.</p>
+            </div>
+
+            <div class="filter-container">
+                <button class="filter-btn active" id="btn-filter-all" onclick="filterHintsBranch('all')">Tout afficher</button>
+                <button class="filter-btn" onclick="filterHintsBranch('Intro')">🌱 Étape Commune</button>
+                <button class="filter-btn" onclick="filterHintsBranch('Kit')">🔥 Branche 1</button>
+                <button class="filter-btn" onclick="filterHintsBranch('Cerveau')">📊 Branche 2</button>
+                <button class="filter-btn" onclick="filterHintsBranch('API')">⚡ Branche 3</button>
+                <button class="filter-btn" onclick="filterHintsBranch('Workspace')">💼 Branche 4</button>
+                <button class="filter-btn" onclick="filterHintsBranch('Conclusion')">🔒 Finale</button>
+            </div>
+
+            <div id="hints-list-container">
+                </div>
         </section>
 
         <section id="planning" class="tab-content">
@@ -623,6 +778,7 @@
         let timerInterval = null;
         let isTimerRunning = false;
         let isPlanningUnlocked = false;
+        let currentHintsFilter = 'all';
 
         function updateTimerDisplay() {
             const min = Math.floor(timerSeconds / 60);
@@ -656,30 +812,30 @@
 
         const missions = [
             // BRANCHE INTRO
-            { id: 1, filiere: "Intro", title: "Le Salut de l'Ancien Régime", reward: 30, desc: "Initialiser Gemini : forcer l'IA à saluer et guider l'usager sur un ton médiéval strict.", prerequis: [] },
+            { id: 1, filiere: "Intro", title: "Le Salut de l'Ancien Régime", reward: 30, desc: "Initialiser Gemini : forcer l'IA à saluer et guider l'usager sur un ton médiéval strict.", prerequis: [], tools: ["Gemini App Web"], steps: ["Ouvrez l'interface standard de Gemini App.", "Formulez un prompt système clair : 'Agis en tant que guide et médiateur numérique issu de l'époque médiévale. Réponds à toutes mes questions dans un vieux français rigoureux, en commençant par un salut d'époque.'", "Testez la robustesse en lui posant une question simple (ex: 'Comment utiliser une souris ?') et copiez la réponse stylisée obtenue pour la soumettre comme preuve."] },
             
             // BRANCHE 1 : KIT EXPRESS
-            { id: 2, filiere: "Kit", title: "Le Séquençage de 2h", reward: 40, desc: "Structurer un déroulé d'atelier complet (Objectifs, étapes, timing) pour débutants.", prerequis: [1] },
-            { id: 3, filiere: "Kit", title: "Le Générateur de QCM", reward: 50, desc: "Générer un quiz interactif de fin de séance adapté au niveau du public cible.", prerequis: [2] },
-            { id: 4, filiere: "Kit", title: "🔮 SECRET : Méta-Quiz Déployé GitHub Pages", reward: 100, desc: "Générer le code HTML d'un quiz, créer un dépôt GitHub et le publier en ligne via GitHub Pages. Fournir l'URL publique.", isSecret: true, check: () => validatedMissions.includes(3) && isBranchComplete("API") },
+            { id: 2, filiere: "Kit", title: "Le Séquençage de 2h", reward: 40, desc: "Structurer un déroulé d'atelier complet (Objectifs, étapes, timing) pour débutants.", prerequis: [1], tools: ["Gemini App", "Modèle d'Atelier HOC"], steps: ["Demandez à l'IA de concevoir la structure temporelle : 'Génère un tableau de séquençage pour un atelier d'inclusion numérique de 2 heures destiné à des seniors découvrant les tablettes.'", "Exigez l'affichage explicite des colonnes suivantes : Durée (ex: 15 min), Objectif pédagogique, Activité du médiateur, et Matériel nécessaire.", "Vérifiez que le cumul des temps est égal à exactement 120 minutes. Copiez le tableau formaté dans la zone de preuve."] },
+            { id: 3, filiere: "Kit", title: "Le Générateur de QCM", reward: 50, desc: "Générer un quiz interactif de fin de séance adapté au niveau du public cible.", prerequis: [2], tools: ["Gemini App"], steps: ["Utilisez les résultats du séquençage de la quête #2.", "Soumettez l'invite suivante : 'À partir de l'atelier précédent, génère un QCM d'évaluation finale de 5 questions. Chaque question doit comporter 3 choix de réponses possibles et une explication bienveillante pour la correction.'", "Sauvegardez le bloc textuel généré. Il servira également de fondation pour le quiz secret sur GitHub Pages."] },
+            { id: 4, filiere: "Kit", title: "🔮 SECRET : Méta-Quiz DéPLOYé GitHub Pages", reward: 100, desc: "Générer le code HTML d'un quiz, créer un dépôt GitHub et le publier en ligne via GitHub Pages. Fournir l'URL publique.", isSecret: true, check: () => validatedMissions.includes(3) && isBranchComplete("API"), tools: ["GitHub Desktop / Web", "Éditeur de code (VS Code)"], steps: ["Demandez à Gemini : 'Convertis le QCM généré à la quête #3 en un fichier HTML interactif unique et moderne (incluant le CSS épuré et le JavaScript pour calculer le score au clic).'", "Créez un fichier nommé impérativement index.html en local et collez-y ce code.", "Créez un dépôt public sur votre compte GitHub, déposez-y le fichier, puis allez dans les options du dépôt Settings > Pages pour l'activer sur la branche principale. Soumettez l'URL publique générée."] },
 
-            // BRANCHE 2 : CERVEAU DE STRUCTURE
-            { id: 5, filiere: "Cerveau", title: "L'Indexation Labyrinthe", reward: 40, desc: "Importer des guides d'accès aux droits (CAF, France Travail) dans NotebookLM sans hallucination.", prerequis: [1] },
-            { id: 6, filiere: "Cerveau", title: "L'Assistant Anti-Erreur", reward: 50, desc: "Soumettre un cas d'usager complexe et extraire les justificatifs requis exacts.", prerequis: [5] },
-            { id: 7, filiere: "Cerveau", title: "🔮 SECRET : Podcast d'Orientation Synthétique", reward: 100, desc: "Générer le Guide Audio de synthèse natif de NotebookLM pour vos équipes à partir des ressources importées.", isSecret: true, check: () => validatedMissions.includes(6) && isBranchComplete("Workspace") },
+            // BRANCHE 2 : CERVEAU DE STRUCTURE (RECONVERTI EN INTEGRALE PIX)
+            { id: 5, filiere: "Cerveau", title: "L'Oracle du Référentiel Pix", reward: 40, desc: "Importer le référentiel officiel Pix et ses 16 compétences dans NotebookLM pour créer un assistant pédagogique infaillible.", prerequis: [1], tools: ["Google NotebookLM", "Documentation Officielle Pix"], steps: ["Ouvrez Google NotebookLM et créez un nouveau bloc-notes professionnel.", "Importez le document PDF du référentiel des compétences Pix (ou le guide du formateur Pix).", "Dans le chat, testez l'IA avec un cas d'usage : 'Un apprenant n'arrive pas à sécuriser son mot de passe. Donne-moi le Domaine, la Compétence Pix exacte et le niveau visé.' Copiez la réponse et la citation source comme preuve."] },
+            { id: 6, filiere: "Cerveau", title: "Le Flash Radio Déramatiseur", reward: 50, desc: "Générer un mini-podcast audio automatisé pour expliquer et dédramatiser la certification Pix auprès de vos stagiaires.", prerequis: [5], tools: ["Google NotebookLM (Audio Overview)"], steps: ["Dans votre NotebookLM Pix, allez dans le panneau de droite 'Aperçu du bloc-notes'.", "Repérez l'option Audio Overview (Générer une discussion audio) et lancez la génération.", "Écoutez les premières secondes de l'échange entre les deux présentateurs IA qui vulgarisent votre référentiel. Décrivez brièvement leur dynamique ou soumettez un extrait textuel pour valider."] },
+            { id: 7, filiere: "Cerveau", title: "🔮 SECRET : Le Coach Pix Personnalisé", reward: 100, desc: "Prendre le contrôle des voix de NotebookLM en y injectant un prompt de cadrage dynamique et corporate.", isSecret: true, check: () => validatedMissions.includes(6) && isBranchComplete("Workspace"), tools: ["NotebookLM Customize Audio"], steps: ["Cliquez sur 'Customize' dans l'encart Audio Overview de NotebookLM.", "Saisissez l'instruction suivante : 'Agis en coach numérique hyper enthousiaste. Adresse-toi directement à la Guilde des Formateurs Pix de House of Codesign et insiste sur l'importance du Domaine 4 (Sécurité).'", "Relancez la génération audio et soumettez la preuve textuelle des changements observés dans le comportement des voix."] },
 
             // BRANCHE 3 : GOOGLE AI STUDIO (API)
-            { id: 8, filiere: "API", title: "La Forge de la Clé API", reward: 40, desc: "Se connecter à Google AI Studio avec votre compte Workspace, générer une clé API de test et configurer un prompt système.", prerequis: [1] },
-            { id: 9, filiere: "API", title: "Le Test de Température", reward: 50, desc: "Ajuster les paramètres (temperature, safety settings) dans AI Studio pour formater une réponse brute JSON.", prerequis: [8] },
-            { id: 10, filiere: "API", title: "🔮 SECRET : Le Micro-Générateur Connecté HTML", reward: 100, desc: "Créer une page HTML locale embarquant un script fetch() qui interroge l'API Gemini de votre AI Studio.", isSecret: true, check: () => validatedMissions.includes(9) && isBranchComplete("Kit") },
+            { id: 8, filiere: "API", title: "La Forge de la Clé API", reward: 40, desc: "Se connecter à Google AI Studio avec votre compte Workspace, générer une clé API de test et configurer un prompt système.", prerequis: [1], tools: ["Google AI Studio"], steps: ["Naviguez vers l'interface de développement Google AI Studio.", "Cliquez sur le bouton bleu 'Get API Key' en haut à gauche et créez une clé associée à un projet d'apprentissage.", "Dans le volet central, ouvrez un 'Chat Prompt' ou 'Freeform Prompt' et inscrivez vos premières instructions système de cadrage de données dans l'encart prévu à cet effet. Indiquez la réussite de l'opération dans les preuves."] },
+            { id: 9, filiere: "API", title: "Le Test de Température", reward: 50, desc: "Ajuster les paramètres (temperature, safety settings) dans AI Studio pour formater une réponse brute JSON.", prerequis: [8], tools: ["Google AI Studio (Paramètres Avancés)"], steps: ["Repérez le panneau latéral droit dans Google AI Studio.", "Abaissez la valeur de la Temperature proche de 0 pour maximiser le déterminisme et réduire la créativité. Changez le format de sortie de 'Text' à 'JSON'.", "Soumettez une requête structurée exigeant une liste d'outils et récupérez le bloc JSON brut pour prouver la bonne configuration de la requête machine."] },
+            { id: 10, filiere: "API", title: "🔮 SECRET : Le Micro-Générateur Connected HTML", reward: 100, desc: "Créer une page HTML locale embarquant un script fetch() qui interroge l'API Gemini de votre AI Studio.", isSecret: true, check: () => validatedMissions.includes(9) && isBranchComplete("Kit"), tools: ["Éditeur de code", "Fonction JavaScript Fetch API"], steps: ["Dans AI Studio, cliquez sur le bouton 'Get Code' en haut à droite de votre prompt configuré pour récupérer la structure d'appel JavaScript native.", "Intégrez cette portion de code au sein d'une fonction asynchrone reliée au clic d'un bouton dans une architecture HTML basique.", "Testez localement l'affichage dynamique de la réponse de l'IA dans votre navigateur. Fournissez le code du script d'appel pour compléter la mission."] },
 
             // BRANCHE 4 : PRODUCTIVITÉ GOOGLE WORKSPACE
-            { id: 11, filiere: "Workspace", title: "Le Décrypteur de Réunion (Meet)", reward: 40, desc: "Utiliser Gemini Workspace dans Docs pour analyser le transcript d'une longue réunion d'équipe et extraire un tableau d'actions.", prerequis: [1] },
-            { id: 12, filiere: "Workspace", title: "Le Cartographe de Documents (Drive)", reward: 50, desc: "Sélectionner 3 à 5 documents disparates de votre Drive et demander à Gemini d'en extraire une synthèse croisée et un plan d'arborescence idéal.", prerequis: [11] },
-            { id: 13, filiere: "Workspace", title: "🔮 SECRET : Base de Connaissances Hybride", reward: 100, desc: "Prendre les synthèses Workspace générées et les importer dans un carnet NotebookLM pour créer un assistant expert croisé.", isSecret: true, check: () => validatedMissions.includes(12) && isBranchComplete("Cerveau") },
+            { id: 11, filiere: "Workspace", title: "Le Décrypteur de Réunion (Meet)", reward: 40, desc: "Utiliser Gemini Workspace dans Docs pour analyser le transcript d'une longue réunion d'équipe et extraire un tableau d'actions.", prerequis: [1], tools: ["Google Docs + Extension Gemini Workspace"], steps: ["Ouvrez le document Google Docs contenant l'historique textuel complet ou la retranscription automatique issue de votre réunion Google Meet.", "Campagnon de l'encadré ou Panneau Gemini (icône d'étoile) et tapez : 'Analyse ce compte-rendu textuel, isole les grandes décisions prises et synthétise-les sous la forme d'un plan d'action assigné par collaborateur.'", "Insérez le tableau généré directement dans votre document et copiez-le en guise de livrable."] },
+            { id: 12, filiere: "Workspace", title: "Le Cartographe de Documents (Drive)", reward: 50, desc: "Sélectionner 3 à 5 documents disparates de votre Drive et demander à Gemini d'en extraire une synthèse croisée et un plan d'arborescence idéal.", prerequis: [11], tools: ["Google Drive + Gemini Integration"], steps: ["Depuis l'interface d'accueil de Google Drive, utilisez le volet Gemini latéral droit.", "Référencez vos fichiers cibles en tapant @ suivi du nom des documents spécifiques à croiser.", "Exécutez l'instruction : 'Trouve les points de convergence et les incohérences structurelles entre ces fichiers, puis propose une arborescence idéale pour les archiver.' Soumettez le plan structurel recommandé."] },
+            { id: 13, filiere: "Workspace", title: "🔮 SECRET : Base de Connaissances Hybride", reward: 100, desc: "Prendre les synthèses Workspace générées et les importer dans un carnet NotebookLM pour créer un assistant expert croisé.", isSecret: true, check: () => validatedMissions.includes(12) && isBranchComplete("Cerveau"), tools: ["Google Drive / Docs", "Google NotebookLM"], steps: ["Exportez les résultats consolidés des quêtes #11 et #12 au format Google Docs propre.", "Retournez sur l'écosystème NotebookLM et ajoutez ces nouveaux fichiers Docs nettoyés comme sources complémentaires à votre projet.", "Interrogez le systeme global pour prouver que les données d'organisation interne et les procédures d'accès aux droits cohabitent de manière fluide."] },
 
             // CONCLUSION
-            { id: 14, filiere: "Conclusion", title: "L'Épreuve Collective Finale", reward: 150, desc: "Générer la méta-charte d'usage éthique, technique et partagée de la Guilde des médiateurs numériques.", prerequis: [], isFinal: true }
+            { id: 14, filiere: "Conclusion", title: "L'Épreuve Collective Finale", reward: 150, desc: "Générer la méta-charte d'usage éthique, technique et partagée de la Guilde des médiateurs numériques.", prerequis: [], isFinal: true, tools: ["Intelligence Collective", "Synthèse Multimodale Gemini"], steps: ["Cette quête finale requiert la mise en commun de l'ensemble des connaissances acquises sur l'Arbre de Missions.", "Demandez à l'IA d'agréger vos livrables : 'Rédige une Charte Éthique et Pratique d'utilisation de l'IA Générative pour des médiateurs numériques en Espace Public. Aborde la protection des données usagers, la sobriété éditoriale et la vérification systématique des faits.'", "Relisez et validez collectivement le document produit avant de le copier dans l'ultime champ de validation pour clore la session."] }
         ];
 
         let totalScore = 0;
@@ -691,6 +847,10 @@
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
             document.getElementById(`btn-tab-${tabId}`).classList.add('active');
+
+            if (tabId === 'hints') {
+                renderHints();
+            }
         }
 
         function tryOpeningPlanning() {
@@ -715,6 +875,79 @@
             }
             if (m.prerequis.length === 0) return true;
             return validatedMissions.includes(m.prerequis[0]);
+        }
+
+        function toggleSolution(button) {
+            const contentBox = button.nextElementSibling;
+            contentBox.classList.toggle('open');
+            
+            if (contentBox.classList.contains('open')) {
+                button.innerText = "Masquer le pas-à-pas";
+                button.style.backgroundColor = "var(--primary-orange)";
+            } else {
+                button.innerText = "Afficher le pas-à-pas";
+                button.style.backgroundColor = "var(--dark-charcoal)";
+            }
+        }
+
+        function filterHintsBranch(branchName) {
+            currentHintsFilter = branchName;
+            
+            const container = document.getElementById('hints');
+            const buttons = container.querySelectorAll('.filter-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            const eventBtn = Array.from(buttons).find(btn => btn.getAttribute('onclick').includes(`'${branchName}'`));
+            if (eventBtn) eventBtn.classList.add('active');
+
+            renderHints();
+        }
+
+        function renderHints() {
+            const container = document.getElementById('hints-list-container');
+            if (!container) return;
+            container.innerHTML = '';
+
+            let unlockedQuests = missions.filter(m => isMissionAccessible(m) || validatedMissions.includes(m.id));
+
+            if (currentHintsFilter !== 'all') {
+                unlockedQuests = unlockedQuests.filter(m => m.filiere === currentHintsFilter);
+            }
+
+            if (unlockedQuests.length === 0) {
+                container.innerHTML = `<div class="no-hints-message">🔒 Aucune astuce disponible dans cette filière. Débloquez de nouvelles quêtes dans votre "Arbre des Missions" pour afficher l'aide pas-à-pas.</div>`;
+                return;
+            }
+
+            unlockedQuests.forEach(m => {
+                const card = document.createElement('div');
+                card.className = 'quest-help-card';
+
+                let toolsHtml = m.tools.map(t => `<span class="tool-badge">${t}</span>`).join('');
+                
+                let stepsHtml = m.steps.map((step, idx) => `
+                    <div class="step-item">
+                        <span class="step-number">Étape ${idx + 1} :</span> ${step}
+                    </div>
+                `).join('');
+
+                card.innerHTML = `
+                    <span class="tag-hoc filiere-${m.filiere}">${m.filiere}</span>
+                    <div class="quest-help-header">
+                        <div class="quest-title" style="font-weight:bold; font-size:16px;">Quête #${m.id} - ${m.title}</div>
+                    </div>
+                    <div class="quest-original-desc">Rappel : ${m.desc}</div>
+                    <div class="tools-box">
+                        <div class="tools-title">Outils requis :</div>
+                        ${toolsHtml}
+                    </div>
+                    <button class="solution-trigger-btn" onclick="toggleSolution(this)">Afficher le pas-à-pas</button>
+                    <div class="step-by-step-content">
+                        ${stepsHtml}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
         }
 
         function checkUnlockConditions() {
@@ -758,7 +991,7 @@
                             <div>
                                 <div class="tag-container">
                                     <span class="tag-hoc filiere-${m.filiere}">${m.filiere}</span>
-                                    <span class="tag-hoc">Actif</span>
+                                    <span class="tag-hoc">${completed ? 'Validé' : 'Actif'}</span>
                                 </div>
                                 <div class="mission-header">
                                     <div class="mission-title">${m.title}</div>
@@ -801,6 +1034,10 @@
                 updateRank();
                 checkUnlockConditions();
                 renderAllGrids();
+                
+                if(document.getElementById('hints').classList.contains('active')) {
+                    renderHints();
+                }
             }
         }
 
