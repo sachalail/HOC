@@ -133,12 +133,20 @@
             padding: 0 20px;
         }
 
+        .navigation-tabs-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
         .navigation-tabs {
             display: flex;
             gap: 10px;
-            margin-bottom: 30px;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 10px;
             flex-wrap: wrap;
         }
 
@@ -176,6 +184,29 @@
             opacity: 1;
             cursor: pointer;
             animation: pulseGreen 2s infinite;
+        }
+
+        /* AJOUT : STYLE DU BOUTON DE DEBLOCAGE GENERAL */
+        .admin-unlock-btn {
+            background-color: transparent;
+            color: var(--dark-charcoal);
+            border: 2px solid var(--dark-charcoal);
+            padding: 10px 16px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 4px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .admin-unlock-btn.override-active {
+            background-color: #DDEBF7;
+            color: #1F4E78;
+            border-color: #1F4E78;
         }
 
         @keyframes pulseGreen {
@@ -479,7 +510,7 @@
             background-color: var(--dark-charcoal);
             color: var(--white);
             border: none;
-            padding: 10px 16px;
+            padding: 10px 166px;
             font-weight: bold;
             border-radius: 4px;
             cursor: pointer;
@@ -617,12 +648,20 @@
 
     <div class="container">
 
-        <nav class="navigation-tabs">
-            <button class="tab-btn active" id="btn-tab-board" onclick="switchTab('board')">Arbre des Missions</button>
-            <button class="tab-btn" id="btn-tab-hints" onclick="switchTab('hints')">💡 Astuces & Méthodologie</button>
-            <button class="tab-btn" id="btn-tab-guild" onclick="switchTab('guild')">Membres de la Guilde</button>
-            <button class="tab-btn tab-locked" id="btn-tab-planning" onclick="tryOpeningPlanning()">🔒 Résultats Secrets</button>
-        </nav>
+        <!-- WRAPPER COMPRENANT LES ONGLETS ET LE COMPOSANT DE DEBLOCAGE GÉNÉRAL -->
+        <div class="navigation-tabs-wrapper">
+            <nav class="navigation-tabs">
+                <button class="tab-btn active" id="btn-tab-board" onclick="switchTab('board')">Arbre des Missions</button>
+                <button class="tab-btn" id="btn-tab-hints" onclick="switchTab('hints')">💡 Astuces & Méthodologie</button>
+                <button class="tab-btn" id="btn-tab-guild" onclick="switchTab('guild')">Membres de la Guilde</button>
+                <button class="tab-btn tab-locked" id="btn-tab-planning" onclick="tryOpeningPlanning()">🔒 Résultats Secrets</button>
+            </nav>
+            
+            <!-- BOUTON AJOUTÉ POUR BASCULER LE DÉBLOCAGE COMPLET / RETOUR PROGRESSION -->
+            <button class="admin-unlock-btn" id="btn-admin-override" onclick="toggleGlobalUnlock()">
+                <span>🔓 Débloquer tout</span>
+            </button>
+        </div>
 
         <section id="board" class="tab-content active">
             <div class="key-metrics">
@@ -662,7 +701,7 @@
         <section id="hints" class="tab-content">
             <div class="info-card">
                 <h3>📚 Guide de Résolution Autonome Apprenants</h3>
-                <p>Une quête vous bloque ? Sélectionnez la filière ci-dessous. <strong>Note :</strong> Seules les quêtes actuellement accessibles ou validées dans votre Arbre des Missions affichent leur méthodologie ici afin de respecter votre progression naturelle.</p>
+                <p>Une quête vous bloque ? Sélectionnez la filière ci-dessous. <strong id="hints-disclaimer-text">Note :</strong> Seules les quêtes actuellement accessibles ou validées dans votre Arbre des Missions affichent leur méthodologie ici afin de respecter votre progression naturelle.</p>
             </div>
 
             <div class="filter-container">
@@ -676,7 +715,7 @@
             </div>
 
             <div id="hints-list-container">
-                </div>
+            </div>
         </section>
 
         <section id="planning" class="tab-content">
@@ -779,6 +818,9 @@
         let isTimerRunning = false;
         let isPlanningUnlocked = false;
         let currentHintsFilter = 'all';
+        
+        // AJOUT : VARIABLE D'ÉTAT POUR LE DÉBLOCAGE GLOBAL FORCE (OVERRIDE)
+        let globalUnlockOverride = false;
 
         function updateTimerDisplay() {
             const min = Math.floor(timerSeconds / 60);
@@ -842,7 +884,9 @@
         let validatedMissions = [];
 
         function switchTab(tabId) {
-            if (tabId === 'planning' && !isPlanningUnlocked) return;
+            // AJOUT DE LA CONDITION DE VERIFICATION AVEC LE FORCE DEBLOCAGE GLOBAL
+            if (tabId === 'planning' && !isPlanningUnlocked && !globalUnlockOverride) return;
+            
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
@@ -854,7 +898,7 @@
         }
 
         function tryOpeningPlanning() {
-            if (!isPlanningUnlocked) {
+            if (!isPlanningUnlocked && !globalUnlockOverride) {
                 alert("🔒 Zone verrouillée. Accessible dès que les quêtes sont terminées ou à l'échéance du temps imparti.");
             } else {
                 switchTab('planning');
@@ -867,6 +911,9 @@
         }
 
         function isMissionAccessible(m) {
+            // SI LE OVERRIDE EST ACTIF, TOUT EST ACCESSIBLE SANS RESTRICTION
+            if (globalUnlockOverride) return true;
+
             if (m.isFinal) {
                 return totalScore >= 400 && validatedMissions.includes(1);
             }
@@ -875,6 +922,43 @@
             }
             if (m.prerequis.length === 0) return true;
             return validatedMissions.includes(m.prerequis[0]);
+        }
+
+        // AJOUT : ACTION DE BASCULE DU BOUTON DE DEBLOCAGE GENERAL 
+        function toggleGlobalUnlock() {
+            const btn = document.getElementById('btn-admin-override');
+            const planningBtn = document.getElementById('btn-tab-planning');
+            const disclaimer = document.getElementById('hints-disclaimer-text');
+            
+            globalUnlockOverride = !globalUnlockOverride;
+            
+            if (globalUnlockOverride) {
+                btn.classList.add('override-active');
+                btn.innerHTML = '<span>🔗 Progression Réelle</span>';
+                
+                // Forcer visuellement le déblocage du menu planning secret
+                planningBtn.classList.remove('tab-locked');
+                planningBtn.classList.add('tab-unlocked');
+                planningBtn.innerText = "🔓 Résultats Secrets";
+                if(disclaimer) disclaimer.innerText = "Mode Admin :";
+            } else {
+                btn.classList.remove('override-active');
+                btn.innerHTML = '<span>🔓 Débloquer tout</span>';
+                
+                // Revenir à l'état réel calculé
+                if (!isPlanningUnlocked) {
+                    planningBtn.classList.remove('tab-unlocked');
+                    planningBtn.classList.add('tab-locked');
+                    planningBtn.innerText = "🔒 Résultats Secrets";
+                }
+                if(disclaimer) disclaimer.innerText = "Note :";
+            }
+            
+            // Rafraîchir l'affichage global de l'interface
+            renderAllGrids();
+            if(document.getElementById('hints').classList.contains('active')) {
+                renderHints();
+            }
         }
 
         function toggleSolution(button) {
@@ -908,7 +992,8 @@
             if (!container) return;
             container.innerHTML = '';
 
-            let unlockedQuests = missions.filter(m => isMissionAccessible(m) || validatedMissions.includes(m.id));
+            // Filtrage adapté selon l'override global
+            let unlockedQuests = missions.filter(m => globalUnlockOverride || isMissionAccessible(m) || validatedMissions.includes(m.id));
 
             if (currentHintsFilter !== 'all') {
                 unlockedQuests = unlockedQuests.filter(m => m.filiere === currentHintsFilter);
@@ -959,10 +1044,12 @@
         function forceUnlockPlanning() {
             if (!isPlanningUnlocked) {
                 isPlanningUnlocked = true;
-                const tabBtn = document.getElementById('btn-tab-planning');
-                tabBtn.classList.remove('tab-locked');
-                tabBtn.classList.add('tab-unlocked');
-                tabBtn.innerText = "🔓 Résultats Secrets";
+                if (!globalUnlockOverride) {
+                    const tabBtn = document.getElementById('btn-tab-planning');
+                    tabBtn.classList.remove('tab-locked');
+                    tabBtn.classList.add('tab-unlocked');
+                    tabBtn.innerText = "🔓 Résultats Secrets";
+                }
             }
         }
 
